@@ -1,11 +1,14 @@
 import React from 'react';
 import './styles/App.css';
 import { useState } from 'react';
+import { ICalculator } from './ICalculator';
+import { Calculator } from './Calculator';
 
+let calc: ICalculator = new Calculator;
 function App() {
-
   type Operator = "+" | "-" | "*" | "/" | ".";
   const [state, setState] = useState("");
+  const [displayValue, setDisplay] = useState(calc.getDisplay());
   let lastVal = state.substr(state.length-1, 1);
 
   function deleteChar() {
@@ -18,53 +21,51 @@ function App() {
     }
   };
 
+  function sendInput(toInput: number){
+    calc.inputNumber(toInput);
+    setDisplay(calc.getDisplay());
+  }
+
   const isOperator = (lastValue: string) => {
     return (lastValue === "+" ) || (lastValue === "-" ) || (lastValue === "*" ) || (lastValue === "/") || (lastValue === ".")
   }
 
+  function sendAddOperator(){
+    calc.opAdd();
+    setDisplay(calc.getDisplay());
+  }
+
   function resolve(){
-    if (!isOperator(lastVal) && state !== ""){
-      try {
-        let finalValue = eval(state); // eslint-disable-line
-        if (finalValue == "Infinity"){
-          alert("Invalid argument " + setState(""));
-          setState("");
-        }else{  
-          setState(String (finalValue));
-        }
-      }catch(e){
-        alert("Invalid argument");
-        setState("");
-      }
-    }
+    calc.equals();
+    setDisplay(calc.getDisplay());
   }
 
   return (
     <div className='calculator-container'>
       <div className='row-calculator'>
-        <button className='button' onClick={() => setState(state + "1")}>1</button>
-        <button className='button' onClick={() => setState(state + "2")}>2</button>
-        <button className='button' onClick={() => setState(state + "3")}>3</button>
-        <button className='button' onClick={() => AddOperator("+")}>+</button>
+        <button className='button' onClick={() => sendInput(1)}>1</button>
+        <button className='button' onClick={() => sendInput(2)}>2</button>
+        <button className='button' onClick={() => sendInput(3)}>3</button>
+        <button className='button' onClick={() => sendAddOperator()}>+</button>
       </div>
       
       <div className='row-calculator'>
-        <button className='button' onClick={() => setState(state + "4")}>4</button>
-        <button className='button' onClick={() => setState(state + "5")}>5</button>
-        <button className='button' onClick={() => setState(state + "6")}>6</button>
+        <button className='button' onClick={() => sendInput(4)}>4</button>
+        <button className='button' onClick={() => sendInput(5)}>5</button>
+        <button className='button' onClick={() => sendInput(6)}>6</button>
         <button className='button' onClick={() => AddOperator("-")}>-</button>
       </div>
 
       <div className='row-calculator'>
-        <button className='button' onClick={() => setState(state + "7")}>7</button>
-        <button className='button' onClick={() => setState(state + "8")}>8</button>
-        <button className='button' onClick={() => setState(state + "9")}>9</button>
+        <button className='button' onClick={() => sendInput(7)}>7</button>
+        <button className='button' onClick={() => sendInput(8)}>8</button>
+        <button className='button' onClick={() => sendInput(9)}>9</button>
         <button className='button' onClick={() => AddOperator("*")}>*</button>
       </div>
 
       <div className='row-calculator'>
         <button className='button' onClick={() => resolve()}>=</button>
-        <button className='button' onClick={() => setState(state + "0")}>0</button>
+        <button className='button' onClick={() => sendInput(0)}>0</button>
         <button className='button' onClick={() => AddOperator(".")}>.</button>
         <button className='button' onClick={() => AddOperator("/")}>/</button>
       </div>
@@ -75,7 +76,7 @@ function App() {
       </div>
 
       <div className='input-container'>
-        <input className='input' type='text' placeholder='Resultado' value={state} readOnly></input>
+        <input className='input' type='text' placeholder='Resultado' value={displayValue} readOnly></input>
       </div>
 
     </div>
