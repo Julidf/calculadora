@@ -49,11 +49,29 @@ button:hover {
 }
 
 .input {
+  text-align: right;
   background-color: #6ca36d;
   margin: 10px;
-  height: 50px;
+  height: 40px;
   width: 265px;
   font-size: 25px;
+}
+
+.equal {
+  background-color: #4CAF50;
+  margin: 10px;
+  height: 50px;
+  width: 65px;
+  font-size: 25px;
+  flex: 1 1;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  border: 2px solid white;
+  border-radius: 25px;
+  cursor: pointer;
+  user-select: none;
+  transition-duration: 0.4s;
 }
 
 

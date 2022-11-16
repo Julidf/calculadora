@@ -1,4 +1,6 @@
+import {Operator} from "./Calculator";
 export interface ICalculator {
+    
     getFirstValue(): number;
 
     getSecondValue(): number;
@@ -11,6 +13,7 @@ export interface ICalculator {
 
     getOpCode(): string;
 
-    opAdd():void;
+    opAdd(operator: Operator):void;
+
     equals():void;
 }

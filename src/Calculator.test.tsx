@@ -46,20 +46,20 @@ test('New calculator has 0 as first value', () => {
 
   test('When pressing add method we want to get opCode as +', () => {
     let calc = new Calculator();
-    calc.opAdd();
+    calc.opAdd("+");
     expect(calc.getOpCode()).toEqual("+");
   });
 
   test('When pressing add method we want to input secondValue', () => {
     let calc = new Calculator();
-    calc.opAdd();
+    calc.opAdd("+");
     calc.inputNumber(5);
     expect(calc.getSecondValue()).toEqual(5);
   });
 
   test('When pressing add method we want to input secondValue', () => {
     let calc = new Calculator();
-    calc.opAdd();
+    calc.opAdd("+");
     calc.inputNumber(5);
     calc.inputNumber(5);
     expect(calc.getSecondValue()).toEqual(55);
@@ -69,10 +69,67 @@ test('New calculator has 0 as first value', () => {
     let calc = new Calculator();
     calc.inputNumber(5);
     calc.inputNumber(5);
-    calc.opAdd();
+    calc.opAdd("+");
     calc.inputNumber(4);
     calc.inputNumber(5);
     calc.equals();
     expect(calc.getResult()).toEqual(100);
     expect(calc.getDisplay()).toEqual("100");
   });
+
+  test('When pressing equals we want the result to be the firstValue and erase op', () => {
+    let calc = new Calculator();
+    calc.inputNumber(5);
+    calc.inputNumber(5);
+    calc.opAdd("+");
+    calc.inputNumber(4);
+    calc.inputNumber(5);
+    calc.equals();
+    expect(calc.getFirstValue()).toEqual(100);
+    expect(calc.getOpCode()).toEqual("");
+  });
+
+  test('When pressing equals firstValue should be temporal', () => {
+    let calc = new Calculator();
+    calc.inputNumber(5);
+    calc.inputNumber(5);
+    calc.opAdd("+");
+    calc.inputNumber(4);
+    calc.inputNumber(5);
+    calc.equals();
+    calc.inputNumber(5);
+    expect(calc.getFirstValue()).toEqual(5);
+    expect(calc.getDisplay()).toEqual("5");
+  });
+
+  test('We should be able to concatenate operations', () => {
+    let calc = new Calculator();
+    calc.inputNumber(5);
+    calc.inputNumber(0);
+    calc.opAdd("+");
+    calc.inputNumber(5);
+    calc.inputNumber(0);
+    calc.opAdd("+");
+    calc.inputNumber(5);
+    calc.inputNumber(0);
+    calc.opAdd("+");
+    expect(calc.getResult()).toEqual(150);
+    expect(calc.getDisplay()).toEqual("150");
+  });
+
+  test('Equals button should not work if we do not have an operator', () => {
+    let calc = new Calculator();
+    calc.inputNumber(5);
+    calc.inputNumber(0);
+    calc.opAdd("+");
+    calc.inputNumber(5);
+    calc.inputNumber(0);
+    calc.equals();
+    calc.equals();
+    expect(calc.getResult()).toEqual(100);
+    expect(calc.getDisplay()).toEqual("100");
+  });
+
+  
+
+
