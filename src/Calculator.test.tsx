@@ -130,6 +130,92 @@ test('New calculator has 0 as first value', () => {
     expect(calc.getDisplay()).toEqual("100");
   });
 
+  test('When pressing the RESET button, the calculator should reset', () => {
+    let calc = new Calculator();
+    calc.inputNumber(5);
+    calc.opAdd("*");
+    calc.inputNumber(5);
+    calc.equals();
+    calc.reset();  
+    expect(calc.getResult()).toEqual(0);
+    expect(calc.getDisplay()).toEqual("0");
+  });
+
+  test('When pressing the DELETE button, the calculator should delete one digit from display', () => {
+    let calc = new Calculator();
+    calc.inputNumber(5);
+    calc.inputNumber(0);
+    calc.opAdd("+");
+    calc.inputNumber(5);
+    calc.inputNumber(0);
+    calc.deletebutton();
+    calc.equals();
+    expect(calc.getResult()).toEqual(55);
+    expect(calc.getDisplay()).toEqual("55");
+  });
+
+  test('When we have one digit left and press the DELETE button, the display should be equals to 0', () => {
+    let calc = new Calculator();
+    calc.inputNumber(9);
+    calc.inputNumber(4);
+    calc.deletebutton();
+    calc.deletebutton();
+    expect(calc.getResult()).toEqual(0);
+    expect(calc.getDisplay()).toEqual("0");
+  });
+
+  test('It should add a comma when we push the comma button', () => {
+    let calc = new Calculator();
+    calc.inputNumber(9);
+    calc.inputNumber(4);
+    calc.addComma();
+    calc.inputNumber(1);
+    expect(calc.getFirstValue()).toEqual(94.1);
+  });
+
+  test('It should handle the multiple inputs of commas', () => {
+    let calc = new Calculator();
+    calc.inputNumber(5);
+    calc.inputNumber(0);
+    calc.addComma();
+    calc.addComma();
+    calc.addComma();
+    calc.addComma();
+    expect(calc.getDisplay()).toEqual("50.0");
+  });
+
+  test('when you keep putting number after the coma it should keep adding decimals ', () => {
+    let calc = new Calculator();
+    calc.inputNumber(9);
+    calc.inputNumber(4);
+    calc.addComma();
+    calc.inputNumber(1);
+    calc.inputNumber(1);
+    calc.inputNumber(1);
+    expect(calc.getFirstValue()).toEqual(94.111);
+  });
+
+  test('We should have a second display to show the operation', () => {
+    let calc = new Calculator();
+    calc.inputNumber(5);
+    calc.inputNumber(0);
+    calc.opAdd("+");
+    calc.inputNumber(5);
+    calc.inputNumber(0);
+    expect(calc.getSecondDisplay()).toEqual("50+");
+  });
+  
+  test('Handle invalid operations like dividing by zero', () => {
+    let calc = new Calculator();
+    calc.inputNumber(5);
+    calc.inputNumber(0);
+    calc.opAdd("/");
+    calc.inputNumber(0);
+    expect(calc.getResult()).toEqual(0);
+  });
+
+
+
   
 
 

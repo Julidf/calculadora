@@ -8,44 +8,55 @@ import {Operator} from "./Calculator";
 let calc: ICalculator = new Calculator;
 function App() {
   
-  const [state, setState] = useState("");
-  const [displayValue, setDisplay] = useState(calc.getDisplay());
-  let lastVal = state.substr(state.length-1, 1);
 
-  function deleteChar() {
-    setState(state.substring(0, state.length - 1))
-  }; 
-  
-  function AddOperator(operator: Operator) {
-    if (state !== "" && !isOperator(lastVal)){
-      setState(state + operator)
-    }
-  };
+  const [displayValue, setDisplay] = useState(calc.getDisplay());
+  const [sDisplayValue, sSetDisplay] = useState(calc.getSecondDisplay());
+
 
   function sendInput(toInput: number){
     calc.inputNumber(toInput);
     setDisplay(calc.getDisplay());
-  }
-
-  const isOperator = (lastValue: string) => {
-    return (lastValue === "+" ) || (lastValue === "-" ) || (lastValue === "*" ) || (lastValue === "/") || (lastValue === ".")
+    sSetDisplay(calc.getSecondDisplay());
   }
 
   function sendAddOperator(operator: Operator){
     calc.opAdd(operator);
     setDisplay(calc.getDisplay());
+    sSetDisplay(calc.getSecondDisplay());
+  }
+
+  function addComma() {
+    calc.addComma();
+    setDisplay(calc.getDisplay());
+    sSetDisplay(calc.getSecondDisplay());
   }
 
   function resolve(){
     calc.equals();
     setDisplay(calc.getDisplay());
+    sSetDisplay(calc.getSecondDisplay());
+  }
+
+  function deletebutton() {
+    calc.deletebutton();
+    setDisplay(calc.getDisplay());
+    sSetDisplay(calc.getSecondDisplay());
+  }
+
+  function reset(){
+    calc.reset();
+    setDisplay(calc.getDisplay());
+    sSetDisplay(calc.getSecondDisplay());
   }
 
   return (
     <div className='calculator-container'>
-
       <div className='input-container'>
-        <input className='input' type='text' placeholder='Resultado' value={displayValue} readOnly></input>
+        <p className='second'>{sDisplayValue}</p>
+      </div>
+      
+      <div className='input-container'>
+        <input className='input' type='text' placeholder='Result' value={displayValue} readOnly></input>
       </div>
       
       <div className='row-calculator'>
@@ -72,13 +83,13 @@ function App() {
       <div className='row-calculator'>
         <button className='equal' onClick={() => resolve()}>=</button>
         <button className='button' onClick={() => sendInput(0)}>0</button>
-        <button className='button' onClick={() => (".")}>.</button>
+        <button className='button' onClick={() => addComma()}>.</button>
         <button className='button' onClick={() => sendAddOperator("/")}>/</button>
       </div>
 
       <div className='row-calculator'>
-        <button className='button' onClick={() => deleteChar()}>DEL</button>
-        <button className='special-button' onClick={() => setState("")}>RESET</button>
+        <button className='button' onClick={() => deletebutton()}>DEL</button>
+        <button className='special-button' onClick={() => reset()}>RESET</button>
       </div>
 
     </div>

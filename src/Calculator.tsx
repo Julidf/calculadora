@@ -20,7 +20,6 @@ export class Calculator implements ICalculator{
     private setSecondValue(value:number) { 
         this.secondValue = value;
         this.display = this.secondValue.toString();
-    
     }
 
     private opCode: string = "";
@@ -33,6 +32,7 @@ export class Calculator implements ICalculator{
             this.equals();
             this.opCode = operator;
         }
+        this.setSecondDisplay(this.firstValue.toString() + this.opCode);
     }
 
     private result: number = 0;
@@ -47,16 +47,40 @@ export class Calculator implements ICalculator{
         return this.display;
     }
 
-    public inputNumber(value: number):void {       
+    private secondDisplay: string = "";
+    public getSecondDisplay(): string {
+        return this.secondDisplay;
+    }
+    private setSecondDisplay(value: string): void {
+        this.secondDisplay = value;
+    }
+
+    public inputNumber(value: number) {       
         if (this.opCode === "") {
             if (this.tempEquals === true) {
                 this.setFirstValue(0);
                 this.tempEquals = false;
             }
-            this.setFirstValue(this.concatenateInput(this.firstValue, value));
+            if (this.coma){
+                this.firstValue = this.firstValue + Number("0." + value.toString())
+                this.display = this.firstValue.toString()
+                
+            }else {
+                this.firstValue = Number(this.firstValue.toString() + value.toString());
+                this.display = this.firstValue.toString()
+            }
+            this.coma = false;
         }
         else {
-            this.setSecondValue(this.concatenateInput(this.secondValue, value));
+            if (this.coma){
+                this.secondValue = this.secondValue + Number("0." + value.toString())
+                this.display = this.secondValue.toString()
+                
+            }else {
+                this.secondValue = Number(this.secondValue.toString() + value.toString());
+                this.display = this.secondValue.toString()
+            }
+            this.coma = false;
         }
     }
 
@@ -65,19 +89,46 @@ export class Calculator implements ICalculator{
         return parseInt(concatenated)
     }
 
-    public equals():void {
-        if (this.opCode){
-            let operation: string = this.firstValue.toString();
-            operation += this.opCode;
-            operation += this.secondValue.toString();
-            this.setResult(eval(operation));
-
-            this.setSecondValue(0);
-            this.setFirstValue(this.getResult());
-            this.opCode = "";
-            this.tempEquals = true;
+    private coma = false;
+    public addComma() {
+        if (!this.display.includes(".")){
+            this.display = this.display + ".0"
+            this.coma = true;
         }
-        
+    }
+
+    public reset() {
+        this.setFirstValue(0);
+        this.setSecondValue(0);
+        this.opCode = "";
+        this.result = 0;
+    }
+
+    public deletebutton() {
+        let value = this.firstValue.toString()
+        let value2 = this.secondValue.toString()
+        if (this.opCode === ""){
+            value.length === 1 ? this.setFirstValue(0) : this.setFirstValue(parseInt(value.substring(0, value.length - 1)));
+        }else{
+            value2.length === 1 ? this.setSecondValue(0) : this.setSecondValue(parseInt(value2.substring(0, value.length - 1)));
+        }
+    }
+
+    public equals() {
+        if (this.opCode){
+            if (this.opCode != "/" || this.secondValue != 0){
+                let operation: string = this.firstValue.toString();
+                operation += this.opCode;
+                operation += this.secondValue.toString();
+                this.setResult(eval(operation));
+                this.setSecondDisplay(operation + " =")
+
+                this.setSecondValue(0);
+                this.setFirstValue(this.getResult());
+                this.opCode = "";
+                this.tempEquals = true;
+            }
+        }
     }
 
 

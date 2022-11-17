@@ -15,5 +15,13 @@ export interface ICalculator {
 
     opAdd(operator: Operator):void;
 
+    reset(): void;
+
+    deletebutton(): void;
+
+    addComma(): void;
+
     equals():void;
+
+    getSecondDisplay(): string;
 }

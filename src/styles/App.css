@@ -74,5 +74,13 @@ button:hover {
   transition-duration: 0.4s;
 }
 
-
+.second {
+  text-align: right;
+  border-color: #1b1b32;
+  margin: 5px;
+  height: 20px;
+  width: 265px;
+  padding: auto;
+  font-size: 25px;
+}
 
