@@ -2,11 +2,13 @@ import { ICalculator } from "./ICalculator";
 export type Operator = "+" | "-" | "*" | "/";
 
 export class Calculator implements ICalculator{
+
     constructor() {
         this.display = this.firstValue.toString();
     }
 
     private tempEquals: boolean = false;
+    private coma = false;
 
     private firstValue: number = 0;
     public getFirstValue(): number { return this.firstValue }
@@ -15,7 +17,7 @@ export class Calculator implements ICalculator{
         this.display = this.firstValue.toString();
     }
 
-    private secondValue: number = 0;
+    private secondValue: number = 0; 
     public getSecondValue(): number { return this.secondValue }
     private setSecondValue(value:number) { 
         this.secondValue = value;
@@ -29,8 +31,12 @@ export class Calculator implements ICalculator{
         if (this.opCode === ""){
             this.opCode = operator;
         } else {
-            this.equals();
-            this.opCode = operator;
+            if (this.secondValue !== 0) {
+                this.equals();
+                this.opCode = operator;
+            } else {
+                this.opCode = operator;
+            }
         }
         this.setSecondDisplay(this.firstValue.toString() + this.opCode);
     }
@@ -56,45 +62,68 @@ export class Calculator implements ICalculator{
     }
 
     public inputNumber(value: number) {       
-        if (this.opCode === "") {
-            if (this.tempEquals === true) {
-                this.setFirstValue(0);
-                this.tempEquals = false;
-            }
-            if (this.coma){
-                this.firstValue = this.firstValue + Number("0." + value.toString())
-                this.display = this.firstValue.toString()
-                
-            }else {
-                this.firstValue = Number(this.firstValue.toString() + value.toString());
-                this.display = this.firstValue.toString()
-            }
-            this.coma = false;
+        if (this.noOpCodeSelected())
+        {
+            this.resetWhenTemp();
+            this.setInputValue(value, this.firstValue, (newValue: number) => {this.firstValue = newValue});
         }
         else {
-            if (this.coma){
-                this.secondValue = this.secondValue + Number("0." + value.toString())
-                this.display = this.secondValue.toString()
-                
-            }else {
-                this.secondValue = Number(this.secondValue.toString() + value.toString());
-                this.display = this.secondValue.toString()
-            }
-            this.coma = false;
+            this.setInputValue(value, this.secondValue, (newValue: number) => {this.secondValue = newValue});
         }
     }
 
-    private concatenateInput(value: number, toInput: number):number{   
-        let concatenated = value.toString() + toInput.toString();
-        return parseInt(concatenated)
+    private noOpCodeSelected(): boolean{
+        return this.opCode === "";
     }
 
-    private coma = false;
+    private setInputValue(value:number, oldValue: number, callback: any){
+        let newValue = 0;
+        if (this.coma){
+            newValue = oldValue + Number("0." + value.toString())
+            this.coma = false;
+        } else {
+            newValue = Number(oldValue.toString() + value.toString());
+        }
+        this.display = newValue.toString()
+        callback(newValue);
+    }
+
     public addComma() {
+        this.resetWhenTemp()
         if (!this.display.includes(".")){
-            this.display = this.display + ".0"
+            this.display = this.display + "."
             this.coma = true;
         }
+    }
+
+    private resetWhenTemp(){
+        if (this.tempEquals === true) {
+            this.setFirstValue(0);
+            this.tempEquals = false;
+        }
+    }
+
+    public sqrtPow(both: string) {
+        let prefixText: string = "";
+        if (this.opCode === "") {
+            this.setResult(this.executeUnitaryMath(both, prefixText, this.firstValue, (theNewValue: number) => this.setFirstValue(theNewValue)));
+        } else {
+            prefixText = this.firstValue.toString() + this.getOpCode();
+            this.setResult(this.executeUnitaryMath(both, prefixText, this.secondValue, (theNewValue: number) => this.setSecondValue(theNewValue)));
+        }
+    }
+
+    private executeUnitaryMath(opCode: string, prefixText: string, currentValue: number, setTheValue: any){
+        let newValue: number = 0;
+        if (opCode === "²"){
+            this.setSecondDisplay(prefixText + currentValue.toString() + opCode );
+            newValue = Math.pow(currentValue, 2);
+        } else {
+            this.setSecondDisplay(prefixText + opCode + currentValue.toString());
+            newValue = Math.sqrt(currentValue)
+        }
+        setTheValue(newValue);
+        return newValue;
     }
 
     public reset() {
@@ -102,25 +131,27 @@ export class Calculator implements ICalculator{
         this.setSecondValue(0);
         this.opCode = "";
         this.result = 0;
+        this.setSecondDisplay("")
+        this.coma = false;
     }
 
     public deletebutton() {
         let value = this.firstValue.toString()
         let value2 = this.secondValue.toString()
         if (this.opCode === ""){
-            value.length === 1 ? this.setFirstValue(0) : this.setFirstValue(parseInt(value.substring(0, value.length - 1)));
+            value.length === 1 ? this.setFirstValue(0) : this.setFirstValue(Number(value.substring(0, value.length - 1)));
         }else{
-            value2.length === 1 ? this.setSecondValue(0) : this.setSecondValue(parseInt(value2.substring(0, value.length - 1)));
+           value2.length === 1 ? this.setSecondValue(0) : this.setSecondValue(Number(value2.substring(0, value2.length - 1)));
         }
     }
 
     public equals() {
         if (this.opCode){
-            if (this.opCode != "/" || this.secondValue != 0){
+            if (this.opCode !== "/" || this.secondValue !== 0){
                 let operation: string = this.firstValue.toString();
                 operation += this.opCode;
                 operation += this.secondValue.toString();
-                this.setResult(eval(operation));
+                this.setResult(eval(operation)) // eslint-disable-line
                 this.setSecondDisplay(operation + " =")
 
                 this.setSecondValue(0);

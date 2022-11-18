@@ -24,4 +24,6 @@ export interface ICalculator {
     equals():void;
 
     getSecondDisplay(): string;
+
+    sqrtPow(both: string): void;
 }

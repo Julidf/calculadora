@@ -181,7 +181,7 @@ test('New calculator has 0 as first value', () => {
     calc.addComma();
     calc.addComma();
     calc.addComma();
-    expect(calc.getDisplay()).toEqual("50.0");
+    expect(calc.getDisplay()).toEqual("50.");
   });
 
   test('when you keep putting number after the coma it should keep adding decimals ', () => {
@@ -214,8 +214,42 @@ test('New calculator has 0 as first value', () => {
     expect(calc.getResult()).toEqual(0);
   });
 
+  test('When pressing the delete button the display should delete one number', () => {
+    let calc = new Calculator();
+    calc.inputNumber(5);
+    calc.inputNumber(0);
+    calc.opAdd("*");
+    calc.inputNumber(4);
+    calc.inputNumber(0);
+    calc.inputNumber(3);
+    calc.deletebutton();
+    expect(calc.getDisplay()).toEqual("40");
+  });
 
-
+  test("Should return squareroot function when we press the sqrt operator", () => {
+    let calc = new Calculator();
+    calc.inputNumber(3);
+    calc.inputNumber(6);
+    calc.sqrtPow("√");
+    expect(calc.getDisplay()).toEqual("6");
+    expect(calc.getFirstValue()).toEqual(6);
+  });
   
+  test("It should update the result when we press the sqrt operator", () => {
+    let calc = new Calculator();
+    calc.inputNumber(3);
+    calc.inputNumber(6);
+    calc.sqrtPow("√");
+    expect(calc.getResult()).toEqual(6);
+  });
+
+  test("Should return two squared number when we press the pow operator.", () => {
+    let calc = new Calculator();
+    calc.inputNumber(1);
+    calc.inputNumber(2);
+    calc.sqrtPow("²");
+    expect(calc.getDisplay()).toEqual("144");
+    expect(calc.getFirstValue()).toEqual(144);
+  });
 
 

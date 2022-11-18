@@ -5,9 +5,9 @@ import { ICalculator } from './ICalculator';
 import { Calculator } from './Calculator';
 import {Operator} from "./Calculator";
 
-let calc: ICalculator = new Calculator;
-function App() {
+function App(props: any) {
   
+  const calc = props.calc
 
   const [displayValue, setDisplay] = useState(calc.getDisplay());
   const [sDisplayValue, sSetDisplay] = useState(calc.getSecondDisplay());
@@ -45,6 +45,12 @@ function App() {
 
   function reset(){
     calc.reset();
+    setDisplay(calc.getDisplay());
+    sSetDisplay(calc.getSecondDisplay());
+  }
+
+  function sqrtPow(both: string){
+    calc.sqrtPow(both);
     setDisplay(calc.getDisplay());
     sSetDisplay(calc.getSecondDisplay());
   }
@@ -88,8 +94,10 @@ function App() {
       </div>
 
       <div className='row-calculator'>
-        <button className='button' onClick={() => deletebutton()}>DEL</button>
-        <button className='special-button' onClick={() => reset()}>RESET</button>
+        <button className='button' onClick={() => reset()}>C</button>
+        <button className='button' onClick={() => deletebutton()}>←</button>
+        <button className='button' onClick={() => sqrtPow("√")}>√</button>
+        <button className='button' onClick={() => sqrtPow("²")}>X²</button>
       </div>
 
     </div>
